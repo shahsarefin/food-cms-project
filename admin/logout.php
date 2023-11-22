@@ -1,13 +1,8 @@
 <?php 
-session_start();       // Start the session
-
-// Unset all of the session variables
+//7.4 log out which also involve PHP session.
+session_start();    
 $_SESSION = array();
-
-// Destroy the session
 session_destroy();
-
-// Redirect to login page
 header('Location: login.php');
 exit;
 ?>

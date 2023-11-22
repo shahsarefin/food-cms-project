@@ -1,43 +1,35 @@
 <?php
+// 7.4: Logins are handled by an HTML form submitted to a PHP script.
 session_start();
-include './DB/db_connect.php'; 
+include './DB/db_connect.php';
 
-
-// Check if the form is submitted
-if (isset($_POST["submit"])) {
+if (isset($_POST["submit"])) :
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Prepare and execute query to check if the user exists
     $stmt = $pdo->prepare("SELECT id, username, password FROM tbl_admin WHERE username = :username");
     $stmt->bindParam(':username', $username);
     $stmt->execute();
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    //Authentication check
-    if ($user) {
-        // Verify the password
-        if (password_verify($password, $user['password'])) {
-            // Password is correct, so start a new session
-            $_SESSION['loggedin'] = "Login Successful.";
-
-            // Redirect user to home page
+    if ($user) :
+        // 7.3: Passwords must be verified during the login process using PHP's password_verify function.
+        if (password_verify($password, $user['password'])) :
+            $_SESSION['loggedin'] = "Login Successful."; // Successful login message (7.4)
             header("location: index.php");
             exit;
-        } else {
-            // Store error message in session and redirect
-            $_SESSION['login_err'] = "Invalid username or password.";
+        else :
+            $_SESSION['login_err'] = "Invalid username or password."; // Failure message (7.4)
             header("location: login.php");
             exit;
-        }
-    } else {
-        // Store error message in session and redirect
-        $_SESSION['login_err'] = "Invalid username or password.";
+        endif;
+    else :
+        $_SESSION['login_err'] = "Invalid username or password."; // Failure message (7.4)
         header("location: login.php");
         exit;
-    }
-}
+    endif;
+endif;
 ?>
 
 <!DOCTYPE html>
@@ -53,13 +45,10 @@ if (isset($_POST["submit"])) {
         <h1 class="text-center">Login</h1>
         <br>
 
-        <?php 
-        
-        if(isset($_SESSION['login_err'])) {
-            echo '<p class="error">' . $_SESSION['login_err'] . '</p>';
-            unset($_SESSION['login_err']);
-        }
-        ?>
+        <?php if(isset($_SESSION['login_err'])) : ?>
+            <p class="error"><?= $_SESSION['login_err'] ?></p>
+            <?php unset($_SESSION['login_err']); ?>
+        <?php endif; ?>
 
         <br>
 
@@ -70,10 +59,6 @@ if (isset($_POST["submit"])) {
             <input type="password" name="password" placeholder="Enter Password"> <br><br>
             <input type="submit" name="submit" value="Login" class="btn-primary">
         </form>
-        
     </div>
 </body>
 </html>
-
-
-

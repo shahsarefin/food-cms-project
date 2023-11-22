@@ -1,94 +1,106 @@
 <?php 
+// Start the session and include the database connection
 session_start();
 include "./DB/db_connect.php";
+
+// Initialize an array to store admin data and any messages
+$admins = [];
+$admin_added = "";
+$admin_deleted = "";
+$admin_update_status = "";
+
+// Check for messages in the session and assign them to variables
+if (isset($_SESSION['admin_added'])) {
+    $admin_added = $_SESSION['admin_added'];
+    unset($_SESSION['admin_added']);
+}
+if (isset($_SESSION['admin_deleted'])) {
+    $admin_deleted = $_SESSION['admin_deleted'];
+    unset($_SESSION['admin_deleted']);
+}
+if (isset($_SESSION['admin_update_status'])) {
+    $admin_update_status = $_SESSION['admin_update_status'];
+    unset($_SESSION['admin_update_status']);
+}
+
+// Fetch admin users from the database
+try {
+    $stmt = $pdo->query("SELECT * FROM tbl_admin");
+    $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $admin_update_status = "Error: " . $e->getMessage();
+}
 ?>
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Manage Admin Page</title>
-       <link rel="stylesheet" href="admin.css">
-    </head>
-
-    <body>
-        <!-- header Section -->
-        <div class="menu text-center">
-            <div class="wrapper">
+<head>
+    <title>Manage Category Page</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="menu text-center">
+        <div class="wrapper">
             <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="manage-admin.php">Admin</a></li>
-                    <li><a href="manage-category.php
-                    ">Category</a></li>
-                    <li><a href="manage-food.php">Food</a></li>
-                    <li><a href="logout.php">Logout</a></li>
-                </ul>
-            </div>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="manage-admin.php">Admin</a></li>
+                <li><a href="manage-category.php">Category</a></li>
+                <li><a href="manage-food.php">Food</a></li>
+                <li><a href="logout.php">Logout</a></li>
+            </ul>
         </div>
-        <!-- Main content Section manage admin page -->
-        <div class="main-content">
+    </div>
+
+    <!-- Main content Section for managing admin page -->
+    <div class="main-content">
         <div class="wrapper">
-                <h1>Manage Admin</h1>
-                <br><br>
+            <h1>Manage Admin</h1>
+            <br><br>
 
-                <?php 
-                    if(isset($_SESSION['admin_added'])) {
-                        echo $_SESSION['admin_added'];
-                        unset($_SESSION['admin_added']);
-                    }
+            <!-- Display messages using alternative syntax -->
+            <?php if ($admin_added): ?>
+                <div class="message"><?php echo $admin_added; ?></div>
+            <?php endif; ?>
+            <?php if ($admin_deleted): ?>
+                <div class="message"><?php echo $admin_deleted; ?></div>
+            <?php endif; ?>
+            <?php if ($admin_update_status): ?>
+                <div class="message"><?php echo $admin_update_status; ?></div>
+            <?php endif; ?>
 
-                    if(isset($_SESSION['admin_deleted'])) {
-                        echo $_SESSION['admin_deleted'];
-                        unset($_SESSION['admin_deleted']);
-                    }
-                    
-                    if(isset($_SESSION['admin_update_status'])) {
-                        echo $_SESSION['admin_update_status'];
-                        unset($_SESSION['admin_update_status']);
-                    }
-                ?>
-                <br> <br>
+            <br><br>
+            <a href="add-admin.php" class="btn-primary">Add Admin</a>
+            <br><br>
 
-                <a href="add-admin.php
-                " class="btn-primary">Add Admin</a>
-
-                <br><br>
-
-                <table class="tbl-full">
+            <!-- Admin table -->
+            <table class="tbl-full">
+                <tr>
+                    <th>Admin No.</th>
+                    <th>Full name</th>
+                    <th>Username</th>
+                    <th>Actions</th>
+                </tr>
+                
+                <!-- Showing Admins from database using alternative syntax -->
+                <?php foreach ($admins as $admin): ?>
                     <tr>
-                        <th>Admin No.</th>
-                        <th>Full name</th>
-                        <th>Username</th>
-                        <th>Actions</th>
+                        <td><?php echo $admin['id']; ?></td>
+                        <td><?php echo htmlspecialchars($admin['full_name']); ?></td>
+                        <td><?php echo htmlspecialchars($admin['username']); ?></td>
+                        <td>
+                            <a href='update-admin.php?id=<?php echo $admin['id']; ?>' class='btn-secondary'>Update Admin</a>
+                            <a href='delete-admin.php?id=<?php echo $admin['id']; ?>' class='btn-danger'>Delete Admin</a>
+                        </td>
                     </tr>
-                    
-                    <!-- Showing Admins from database -->
-                    <?php
-                    try {
-                        $stmt = $pdo->query("SELECT * FROM tbl_admin");
-                        $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                <?php endforeach; ?>
+            </table>
+        </div>
+    </div>
 
-                        foreach ($admins as $admin) {
-                            echo "<tr>";
-                            echo "<td>" . $admin['id'] . "</td>"; 
-                            echo "<td>" . htmlspecialchars($admin['full_name']) . "</td>";
-                            echo "<td>" . htmlspecialchars($admin['username']) . "</td>";
-                            echo "<td>
-                                    <a href='update-admin.php?id=" . $admin['id'] . "' class='btn-secondary'>Update Admin</a>
-                                    <a href='delete-admin.php?id=" . $admin['id'] . "' class='btn-danger'>Delete Admin</a>
-                                  </td>";
-                            echo "</tr>";
-                        }
-                    } catch (PDOException $e) {
-                        echo "Error: " . $e->getMessage();
-                    }
-                    ?>
-                </table>
-        </div>
-          
-        <!-- Footer Section -->
-        <div class="footer">
+    <!-- Footer Section -->
+    <div class="footer">
         <div class="wrapper">
-                <p class="text-center"> 2023 All rights reserved, Food Manitoba, Developed by <a href="#">Shah Sultanul Arefin</a></p>
-            </div>
+            <p class="text-center">&copy; 2023 All rights reserved, Food Manitoba</p>
         </div>
-    </body>
-   
+    </div>
+</body>
 </html>

@@ -1,9 +1,12 @@
 <?php
+// Start the session and include the database connection
 session_start();
-include './DB/db_connect.php';
+include "./DB/db_connect.php";
 
-//Processing the Form 
-if(isset($_POST['submit'])) {
+$message = "";
+
+// Processing the Form
+if (isset($_POST['submit'])) {
     // Extract and sanitize form data
     $id = $_POST['id'];
     $full_name = $_POST['full_name'];
@@ -15,7 +18,7 @@ if(isset($_POST['submit'])) {
     $stmt->bindParam(':username', $username);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-    if($stmt->execute()) {
+    if ($stmt->execute()) {
         $_SESSION['admin_update_status'] = "Admin updated successfully.";
     } else {
         $_SESSION['admin_update_status'] = "Failed to update admin.";
@@ -25,8 +28,8 @@ if(isset($_POST['submit'])) {
     exit();
 }
 
-//Fetching Admin Data 
-if(isset($_GET['id']) && !isset($_POST['submit'])) { 
+// Fetching Admin Data
+if (isset($_GET['id']) && !isset($_POST['submit'])) {
     $adminId = $_GET['id'];
 
     $stmt = $pdo->prepare("SELECT * FROM tbl_admin WHERE id = :id");
@@ -34,17 +37,19 @@ if(isset($_GET['id']) && !isset($_POST['submit'])) {
     $stmt->execute();
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if(!$admin) {
+    if (!$admin) {
         header("Location: manage-admin.php");
         exit();
     }
 }
 ?>
+
+<!DOCTYPE html>
 <html>
 <head>
-        <title>Update Admin Page</title>
-       <link rel="stylesheet" href="admin.css">
-    </head>
+    <title>Update Admin Page</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
 <body>
     <div class="main-content">
         <div class="wrapper">
