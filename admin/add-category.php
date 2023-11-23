@@ -1,4 +1,5 @@
 <?php
+//6.1 - add image by a form upload and image-ness test
 session_start();
 include "./DB/db_connect.php";
 
