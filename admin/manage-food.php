@@ -1,9 +1,9 @@
 <?php
-// Start the session and include the database connection
+
 session_start();
 include "./DB/db_connect.php";
 
-// Initialize an array to store food data and any messages
+
 $foods = [];
 $admin_added = isset($_SESSION['admin_added']) ? $_SESSION['admin_added'] : "";
 $admin_deleted = isset($_SESSION['admin_deleted']) ? $_SESSION['admin_deleted'] : "";
@@ -18,7 +18,7 @@ try {
     exit();
 }
 
-// Clear session messages
+
 unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_update_status']);
 ?>
 
@@ -61,9 +61,9 @@ unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_upd
                 <p><?php echo $admin_update_status; ?></p>
             <?php endif; ?>
 
-            <?php if (isset($_SESSION['upload-error'])): ?> <!-- Add this section -->
+            <?php if (isset($_SESSION['upload-error'])): ?> 
     <p><?php echo $_SESSION['upload-error']; ?></p>
-    <?php unset($_SESSION['upload-error']); ?> <!-- Clear the session message -->
+    <?php unset($_SESSION['upload-error']); ?> 
 <?php endif; ?>
 
             <br><br>
