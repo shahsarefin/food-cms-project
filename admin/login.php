@@ -1,9 +1,10 @@
-<?php
-// 7.4: Logins are handled by an HTML form submitted to a PHP script.
+<?php 
+//7.4 - Login handled, messages displayed,session used, logout handled in logout.php
 session_start();
 include './DB/db_connect.php';
 
 if (isset($_POST["submit"])) :
+    
     $username = $_POST['username'];
     $password = $_POST['password'];
 
@@ -14,18 +15,17 @@ if (isset($_POST["submit"])) :
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) :
-        // 7.3: Passwords must be verified during the login process using PHP's password_verify function.
         if (password_verify($password, $user['password'])) :
-            $_SESSION['loggedin'] = "Login Successful."; // Successful login message (7.4)
+            $_SESSION['loggedin'] = "Login Successful.";
             header("location: index.php");
             exit;
         else :
-            $_SESSION['login_err'] = "Invalid username or password."; // Failure message (7.4)
+            $_SESSION['login_err'] = "Invalid username or password.";
             header("location: login.php");
             exit;
         endif;
     else :
-        $_SESSION['login_err'] = "Invalid username or password."; // Failure message (7.4)
+        $_SESSION['login_err'] = "Invalid username or password.";
         header("location: login.php");
         exit;
     endif;
