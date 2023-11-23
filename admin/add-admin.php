@@ -1,11 +1,12 @@
 <?php 
-// Start the session and include the database connection
 session_start();
 include "./DB/db_connect.php";
 
 $message = "";
 
 if(isset($_POST['submit'])) {
+    //7.2 - Userbname and password are stored in admin table
+    //7.3 passwords stored in admin table hasded and salted
     $full_name = $_POST['full_name'];
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
@@ -24,6 +25,7 @@ if(isset($_POST['submit'])) {
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html>
