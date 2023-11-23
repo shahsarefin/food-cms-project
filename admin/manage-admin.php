@@ -1,6 +1,6 @@
 <?php 
-// Start the session and include the database connection
-session_start();
+//7.1- Only admins can perform admin page CUD tasks
+session_start(); 
 include "./DB/db_connect.php";
 
 // Initialize an array to store admin data and any messages
@@ -11,24 +11,24 @@ $admin_update_status = "";
 
 // Check for messages in the session and assign them to variables
 if (isset($_SESSION['admin_added'])) {
-    $admin_added = $_SESSION['admin_added'];
+    $admin_added = $_SESSION['admin_added']; 
     unset($_SESSION['admin_added']);
 }
 if (isset($_SESSION['admin_deleted'])) {
-    $admin_deleted = $_SESSION['admin_deleted'];
+    $admin_deleted = $_SESSION['admin_deleted']; 
     unset($_SESSION['admin_deleted']);
 }
 if (isset($_SESSION['admin_update_status'])) {
-    $admin_update_status = $_SESSION['admin_update_status'];
+    $admin_update_status = $_SESSION['admin_update_status'];  
     unset($_SESSION['admin_update_status']);
 }
 
-// Fetch admin users from the database
+// Fetch admins from the database
 try {
     $stmt = $pdo->query("SELECT * FROM tbl_admin");
-    $admins = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $admins = $stmt->fetchAll(PDO::FETCH_ASSOC); 
 } catch (PDOException $e) {
-    $admin_update_status = "Error: " . $e->getMessage();
+    $admin_update_status = "Error: " . $e->getMessage(); 
 }
 ?>
 <!DOCTYPE html>
@@ -80,7 +80,7 @@ try {
                     <th>Actions</th>
                 </tr>
                 
-                <!-- Showing Admins from database using alternative syntax -->
+                <!-- Showing Admins from database-->
                 <?php foreach ($admins as $admin): ?>
                     <tr>
                         <td><?php echo $admin['id']; ?></td>
@@ -99,7 +99,7 @@ try {
     <!-- Footer Section -->
     <div class="footer">
         <div class="wrapper">
-            <p class="text-center">&copy; 2023 All rights reserved, Food Manitoba</p>
+            <p class="text-center">&copy; 2023 All rights reserved.</p>
         </div>
     </div>
 </body>
