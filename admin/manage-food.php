@@ -49,7 +49,7 @@ unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_upd
         <div class="wrapper">
             <h1>Manage Food</h1>
             <br><br>
-
+            
             <!-- Display session messages -->
             <?php if ($admin_added): ?>
                 <p><?php echo $admin_added; ?></p>
@@ -90,7 +90,9 @@ unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_upd
                     <td><?php echo htmlspecialchars($food['price']); ?></td>
                     <td>
                         <?php if ($food['image_name'] != ""): ?>
+                            <!-- 6.4 - If there is an associated image, display it using an HTML image tag. -->
                             <img src="../images/food/<?php echo htmlspecialchars($food['image_name']); ?>" width="100px">
+                            <!-- 6.4 - If there is no associated image, "No Image" instead of an HTML image tag. -->
                         <?php else: ?>
                             No Image
                         <?php endif; ?>
