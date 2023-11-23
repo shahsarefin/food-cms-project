@@ -2,6 +2,7 @@
 session_start();
 include "./DB/db_connect.php";
 
+//Deleting id and images from database and local folder
 if(isset($_GET['id']) && is_numeric($_GET['id'])) {
     $id = $_GET['id'];
 
