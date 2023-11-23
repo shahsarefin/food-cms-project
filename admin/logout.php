@@ -1,5 +1,5 @@
 <?php 
-//7.4 log out which also involve PHP session.
+//7.4 - logout with PHP session
 session_start();    
 $_SESSION = array();
 session_destroy();
