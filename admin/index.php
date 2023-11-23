@@ -1,32 +1,27 @@
 <?php
 session_start();
-include './DB/db_connect.php'; // Assuming you have a database connection here
+include './DB/db_connect.php';
 
-// Check if the user is logged in. If not, redirect to the login page
 if (!isset($_SESSION['loggedin'])) {
     header("Location: login.php");
     exit;
 }
 
 try {
-    // Fetch the count of admins
     $adminStmt = $pdo->query("SELECT COUNT(*) FROM tbl_admin");
     $adminCount = $adminStmt->fetchColumn();
 
-    // Fetch the count of categories
     $categoryStmt = $pdo->query("SELECT COUNT(*) FROM tbl_category");
     $categoryCount = $categoryStmt->fetchColumn();
 
-    // Fetch the count of food items
     $foodStmt = $pdo->query("SELECT COUNT(*) FROM tbl_food");
     $foodCount = $foodStmt->fetchColumn();
 } catch (PDOException $e) {
-    // Handle any database errors here
-    // You can log the error or display an error message to the user
     echo "Database Error: " . $e->getMessage();
     exit;
 }
 ?>
+
 
 <html>
 <head>
