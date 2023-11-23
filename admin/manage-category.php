@@ -1,4 +1,6 @@
 <?php
+// 6.4 - Pages that have an associated image display the image using an HTML image tag.
+// 6.4 - Pages without images display "No Image", without an HTML image tag.
 session_start();
 include "./DB/db_connect.php";
 
@@ -77,8 +79,10 @@ if (isset($_SESSION['upload-error'])) {
                     <td>
                         <?php 
                         if ($category['image_name'] != "") {
+                            // 6.4 - Pages that have an associated image display the image using an HTML image tag.
                             echo '<img src="../images/category/' . htmlspecialchars($category['image_name']) . '" width="100px">';
                         } else {
+                            // 6.4 - Pages without images "No Image", without an HTML image tag.
                             echo "No Image";
                         }
                         ?>
