@@ -2,87 +2,89 @@
 session_start();
 include "./DB/db_connect.php";
 
+$title = $featured = $active = $current_image = "";
+$id = 0;
+
+// Check if ID is set and fetch current category data
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $sql = "SELECT * FROM tbl_category WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $category = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($category) {
+        $title = $category['title'];
+        $featured = $category['featured'];
+        $active = $category['active'];
+        $current_image = $category['image_name'];
+    } else {
+        $_SESSION['no-category-found'] = "<div class='error'>Category not found.</div>";
+        header("Location: manage-category.php");
+        exit();
+    }
+}
+
 if (isset($_POST['submit'])) {
     $id = $_POST['id'];
     $title = $_POST['title'];
     $featured = $_POST['featured'];
     $active = $_POST['active'];
-    $image_name = ""; // 6.1 Images are optional. Pages can still be created and updated without adding an image.
+    // Default to the current image if no new image is uploaded
+    $image_name = $current_image; 
 
+    // Image handling
     if (isset($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
         $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        if (in_array($file_extension, $valid_extensions)) {
+            $image_name = "Category-File-" . rand(0000, 9999) . "." . $file_extension;
+            $source_path = $_FILES['image']['tmp_name'];
+            $destination_path = "../images/category/" . $image_name;
 
-        if (!in_array($file_extension, $valid_extensions)) {
-            $_SESSION['upload-error'] = "<div class='error'>Invalid file extension. Only image files (JPEG, PNG, GIF) are allowed.</div>";
-            header("Location: manage-category.php");
-            exit();
-        }
-
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mime_type = $finfo->file($_FILES['image']['tmp_name']);
-        $valid_mime_types = ['image/jpeg', 'image/png', 'image/gif'];
-
-        if (!in_array($mime_type, $valid_mime_types)) {
-            $_SESSION['upload-error'] = "<div class='error'>Invalid MIME type. Only image files (JPEG, PNG, GIF) are allowed.</div>";
-            header("Location: manage-category.php");
-            exit();
-        }
-
-        if (!getimagesize($_FILES['image']['tmp_name'])) {
-            $_SESSION['upload-error'] = "<div class='error'>File is not an actual image.</div>";
-            header("Location: manage-category.php");
-            exit();
-        }
-
-        $image_name = "Food_Category_" . rand(000, 999) . '.' . $file_extension;
-        $source_path = $_FILES['image']['tmp_name'];
-        $destination_path = "../images/category/" . $image_name;
-
-        if (move_uploaded_file($source_path, $destination_path)) {
-            // 6.2 Uploads that pass this "image-ness" test are moved to an uploads folder and with their filename added to a row in an images table.
-        } else {
-            $_SESSION['upload'] = "<div class='error'>Failed to upload the image.</div>";
-            header("Location: update-category.php?id=" . $id);
-            exit();
-        }
-
-        if (!empty($_POST['current_image'])) {
-            $remove_path = "../images/category/" . $_POST['current_image'];
-            if (unlink($remove_path)) {
-                // Remove an associated image from a page.
-            } else {
-                $_SESSION['failed-remove'] = "<div class='error'>Failed to remove the current image.</div>";
-                header("Location: update-category.php?id=" . $id);
+            if (!move_uploaded_file($source_path, $destination_path)) {
+                $_SESSION['upload'] = "<div class='error'>Failed to upload the image.</div>";
+                header("location: update-category.php?id=" . $id);
                 exit();
             }
+
+            // Delete the old image if a new one is uploaded
+            if ($current_image != "" && $current_image != $image_name) {
+                $remove_path = "../images/category/" . $current_image;
+                if (file_exists($remove_path) && !unlink($remove_path)) {
+                    $_SESSION['failed-remove'] = "<div class='error'>Failed to remove current image.</div>";
+                    header("Location: update-category.php?id=" . $id);
+                    exit();
+                }
+            }
+        } else {
+            $_SESSION['upload'] = "<div class='error'>Invalid file extension. Only image files (JPEG, PNG, GIF) are allowed.</div>";
+            header("location: update-category.php?id=" . $id);
+            exit();
         }
-    } else {
-        $image_name = $_POST['current_image']; // If no new image is uploaded, keep the current image.
     }
+
+    // SQL query to update the category
+    $sql = "UPDATE tbl_category SET title = :title, featured = :featured, active = :active, image_name = :image_name WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':title', $title);
+    $stmt->bindParam(':featured', $featured);
+    $stmt->bindParam(':active', $active);
+    $stmt->bindParam(':image_name', $image_name);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
     try {
-        $sql = "UPDATE tbl_category SET title = :title, featured = :featured, active = :active, image_name = :image_name WHERE id = :id";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':featured', $featured);
-        $stmt->bindParam(':active', $active);
-        $stmt->bindParam(':image_name', $image_name);
         $stmt->execute();
-
         $_SESSION['update'] = "<div class='success'>Category updated successfully.</div>";
-        header("Location: manage-category.php");
-        exit();
-    } catch (PDOException $e) {
+    } catch(PDOException $e) {
         $_SESSION['update-error'] = "<div class='error'>Error updating category: " . $e->getMessage() . "</div>";
-        header("Location: update-category.php?id=" . $id);
-        exit();
     }
+
+    header("Location: manage-category.php");
+    exit();
 }
 ?>
-
-
 
 
 

@@ -1,18 +1,18 @@
 <?php
-// Start the session and include the database connection
+
 session_start();
 include "./DB/db_connect.php";
 
 $message = "";
 
-// Processing the Form
+
 if (isset($_POST['submit'])) {
-    // Extract and sanitize form data
+    
     $id = $_POST['id'];
     $full_name = $_POST['full_name'];
     $username = $_POST['username'];
 
-    // Prepare and execute the update statement
+    
     $stmt = $pdo->prepare("UPDATE tbl_admin SET full_name = :full_name, username = :username WHERE id = :id");
     $stmt->bindParam(':full_name', $full_name);
     $stmt->bindParam(':username', $username);
@@ -28,7 +28,7 @@ if (isset($_POST['submit'])) {
     exit();
 }
 
-// Fetching Admin Data
+
 if (isset($_GET['id']) && !isset($_POST['submit'])) {
     $adminId = $_GET['id'];
 

@@ -6,13 +6,6 @@ $id = $title = $description = $price = $category = $featured = $active = $image_
 $current_image = "";
 $categories = [];
 
-// 6.2 - Uploaded images must be tested for “image-ness”
-function is_valid_image($file_path)
-{
-    $image_info = @getimagesize($file_path);
-    return $image_info !== false && in_array($image_info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_GIF]);
-}
-
 // Fetch the food item details
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $_SESSION['error'] = "Invalid food ID.";
@@ -54,36 +47,30 @@ if (isset($_POST['submit'])) {
         // New image is uploaded
         $image_name = $_FILES['image']['name'];
         $source_path = $_FILES['image']['tmp_name'];
-        $file_extension = pathinfo($image_name, PATHINFO_EXTENSION);
+        $file_extension = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
+        $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+        
+        if (in_array($file_extension, $valid_extensions)) {
+            $image_name = "Food-Name-" . rand(0000, 9999) . "." . $file_extension;
+            $destination_path = "../images/food/" . $image_name;
 
-        // 6.2 Check if the uploaded file is a valid image
-        if (!is_valid_image($source_path)) {
-            // 6.4 - Uploads that do not pass the "image-ness" test will be gracefully rejected and will not end up in the file system or database.
-            $_SESSION['upload-error'] = "Invalid image format. Only JPEG, PNG, and GIF images are allowed.";
-            header('Location: manage-food.php'); // Redirect to the manage-food page with error message
-            exit();
-        }
+            if (!move_uploaded_file($source_path, $destination_path)) {
+                $_SESSION['upload-error'] = "Failed to upload new image.";
+                header('Location: update-food.php?id=' . $id);
+                exit();
+            }
 
-        // Generate a new filename for the image
-        $image_name = "Food-Name-" . rand(0000, 9999) . "." . $file_extension;
-        $destination_path = "../images/food/" . $image_name;
-
-        // 6.3 Upload the new image
-        $upload = move_uploaded_file($source_path, $destination_path);
-        if ($upload == false) {
-            $_SESSION['upload-error'] = "Failed to upload new image.";
+            // Delete the old image if it exists
+            if ($food['image_name'] != "" && file_exists("../images/food/" . $food['image_name'])) {
+                unlink("../images/food/" . $food['image_name']); // Remove the associated image from the page
+            }
+        } else {
+            $_SESSION['upload-error'] = "Invalid file extension. Only JPEG, PNG, and GIF images are allowed.";
             header('Location: update-food.php?id=' . $id);
             exit();
         }
-
-        // Delete the old image if it exists
-        if ($food['image_name'] != "" && file_exists("../images/food/" . $food['image_name'])) {
-            //remove an associated image from a page
-            unlink("../images/food/" . $food['image_name']);
-        }
     } else {
-        // 6.1 - Images are optional. Pages can still be created and updated without adding an image.
-        $image_name = $food['image_name'];
+        $image_name = $food['image_name']; // No new image uploaded, use the existing one
     }
 
     // Update query
@@ -110,6 +97,7 @@ if (isset($_POST['submit'])) {
     exit();
 }
 ?>
+
 
 
 
