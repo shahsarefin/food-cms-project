@@ -1,26 +1,38 @@
 <?php
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 include "./DB/db_connect.php";
-
 
 $foods = [];
 $admin_added = isset($_SESSION['admin_added']) ? $_SESSION['admin_added'] : "";
 $admin_deleted = isset($_SESSION['admin_deleted']) ? $_SESSION['admin_deleted'] : "";
 $admin_update_status = isset($_SESSION['admin_update_status']) ? $_SESSION['admin_update_status'] : "";
 
-// Fetch food items from the database
+// Determine sort option
+$sort = isset($_GET['sort']) ? $_GET['sort'] : null;
+$allowedSorts = ['title', 'created_at', 'updated_at'];
+$orderBy = "";
+
+if (in_array($sort, $allowedSorts)) {
+    $orderBy = " ORDER BY $sort";
+}
+
+// Fetch food items from the database with optional sorting
 try {
-    $stmt = $pdo->query("SELECT * FROM tbl_food");
+    $stmt = $pdo->query("SELECT * FROM tbl_food" . $orderBy);
     $foods = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
     exit();
 }
 
-
 unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_update_status']);
 ?>
+
 
 
 <!DOCTYPE html>
@@ -71,41 +83,56 @@ unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_upd
             <a href="add-food.php" class="btn-primary">Add Food</a>
             <br><br>
 
-            <table class="tbl-full">
-                <tr>
-                    <th>No.</th>
-                    <th>Title</th>
-                    <th>Price</th>
-                    <th>Image</th>
-                    <th>Featured</th>
-                    <th>Active</th>
-                    <th>Actions</th>
-                </tr>
+            <br>
+          <!-- Sorting Options -->
+<div class="sorting-options">
+<span class="bold-text">Sort by:</span> 
+    <a href="?sort=title" class="sorting-button">Title</a> |
+    <a href="?sort=created_at" class="sorting-button">Created at</a> | 
+    <a href="?sort=updated_at" class="sorting-button">Updated at</a>
+</div>
 
-                <!-- Display food items -->
-                <?php foreach ($foods as $index => $food): ?>
-                <tr>
-                    <td><?php echo $index + 1; ?></td>
-                    <td><?php echo htmlspecialchars($food['title']); ?></td>
-                    <td><?php echo htmlspecialchars($food['price']); ?></td>
-                    <td>
-                        <?php if ($food['image_name'] != ""): ?>
-                            <!-- 6.4 - If there is an associated image, display it using an HTML image tag. -->
-                            <img src="../images/food/<?php echo htmlspecialchars($food['image_name']); ?>" width="100px">
-                            <!-- 6.4 - If there is no associated image, "No Image" instead of an HTML image tag. -->
-                        <?php else: ?>
-                            No Image
-                        <?php endif; ?>
-                    </td>
-                    <td><?php echo htmlspecialchars($food['featured']); ?></td>
-                    <td><?php echo htmlspecialchars($food['active']); ?></td>
-                    <td>
-                        <a href="update-food.php?id=<?php echo $food['id']; ?>" class="btn-secondary">Update Food</a>
-                        <a href="delete-food.php?id=<?php echo $food['id']; ?>" class="btn-danger">Delete Food</a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-            </table>
+
+<br><br>
+    
+<table class="tbl-full">
+    <tr>
+        <th>Title</th>
+        <th>Price</th>
+        <th>Image</th>
+        <th>Featured</th>
+        <th>Active</th>
+        <th>Created Date</th>
+        <th>Updated Date</th>
+        <th style="width: 150px;">Actions</th>
+    </tr>
+
+    <!-- Display food items -->
+    <?php foreach ($foods as $food): ?>
+    <tr>
+        <td><?php echo htmlspecialchars($food['title']); ?></td>
+        <td><?php echo htmlspecialchars($food['price']); ?></td>
+        <td>
+            <?php if ($food['image_name'] != ""): ?>
+                <img src="../images/food/<?php echo htmlspecialchars($food['image_name']); ?>" width="100px">
+            <?php else: ?>
+                No Image
+            <?php endif; ?>
+        </td>
+        <td><?php echo htmlspecialchars($food['featured']); ?></td>
+        <td><?php echo htmlspecialchars($food['active']); ?></td>
+        <td><?php echo htmlspecialchars($food['created_at']); ?></td>
+        <td><?php echo htmlspecialchars($food['updated_at']); ?></td>
+        <td>
+            <a href="update-food.php?id=<?php echo $food['id']; ?>" class="btn-secondary action-button">Update</a>
+            <a href="delete-food.php?id=<?php echo $food['id']; ?>" class="btn-danger action-button">Delete</a>
+        </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+            
+
         </div>
     </div>
 
