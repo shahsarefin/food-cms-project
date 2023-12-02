@@ -1,12 +1,8 @@
-/*
-Css for user part 
-Name : Shah Sultanul Arefin
-*/
+/* CSS for All */
 * {
   margin: 0;
   padding: 0;
   font-family: Arial, Helvetica, sans-serif;
-  box-sizing: border-box;
 }
 
 .container {
@@ -53,22 +49,18 @@ a:hover {
   color: #ff4757;
 }
 
-.btn {
+.btn,
+.btn-primary {
   padding: 1%;
   border: none;
   font-size: 1rem;
   border-radius: 5px;
-}
-
-.btn-primary {
-  background-color: #87ceeb;
+  background-color: skyblue;
   color: white;
-  cursor: pointer;
 }
 
 .btn-primary:hover {
-  color: white;
-  background-color: #1e90ff;
+  background-color: darkblue;
 }
 
 h2 {
@@ -81,24 +73,7 @@ h3 {
   font-size: 1.5rem;
 }
 
-.float-container {
-  position: relative;
-}
-
-.float-text {
-  position: absolute;
-  bottom: 50px;
-  left: 40%;
-}
-
-fieldset {
-  border: 1px solid white;
-  margin: 5%;
-  padding: 3%;
-  border-radius: 5px;
-}
-
-/* CSS for Navbar */
+/* Navbar Styles */
 .navbar {
   background-color: white;
   color: black;
@@ -106,21 +81,31 @@ fieldset {
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12);
 }
 
+.logo {
+  width: 10%;
+  float: left;
+}
+
 .menu {
   float: left;
+  width: 90%;
+  line-height: 60px;
 }
 
 .menu ul {
   list-style-type: none;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  padding: 0;
 }
 
 .menu ul li {
   display: inline;
-  padding: 0 20px;
+  padding: 1%;
   font-weight: bold;
 }
 
-/* CSS for Navbar Links */
 .menu ul li a {
   color: black;
   text-decoration: none;
@@ -130,10 +115,10 @@ fieldset {
   color: gray;
 }
 
-/* CSS for Food Search Section */
+/* Food Search Section */
 .food-search {
   background-color: black;
-  padding: 2% 0;
+  padding: 7% 0;
 }
 
 .food-search input[type="search"] {
@@ -146,36 +131,12 @@ fieldset {
   color: white;
 }
 
-/* Adjustments for Small Screens */
-@media only screen and (max-width: 768px) {
-  .menu {
-    text-align: center;
-    float: none;
-  }
-  .menu ul {
-    padding-top: 20px;
-  }
-  .menu ul li {
-    display: block;
-    padding: 10px 0;
-  }
-}
-
-/* CSS for Categories */
-.categories {
-  padding: 4% 0;
-}
-
-.box-3 {
-  width: 28%;
-  float: left;
-  margin: 2%;
-}
-
+/* Food Menu Section */
 .food-menu {
   background-color: #ececec;
   padding: 4% 0;
 }
+
 .food-menu-box {
   width: 43%;
   margin: 1%;
@@ -200,50 +161,122 @@ fieldset {
   font-size: 1.2rem;
   margin: 2% 0;
 }
+
 .food-detail {
   font-size: 1rem;
   color: #747d8c;
 }
-/* CSS for Social */
-.social ul {
-  list-style-type: none;
+
+/* Food Item Details Section */
+.food-item-details .container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
 }
 
-.social ul li {
-  display: inline;
-  padding: 1%;
+.food-item-details .food-item-image {
+  flex: 0 0 30%;
+  max-width: 30%;
 }
 
-/* for Order Section */
-.order {
-  width: 50%;
-  margin: 0 auto;
+.food-item-details .food-item-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
 }
 
-.input-responsive {
-  width: 96%;
-  padding: 1%;
-  margin-bottom: 3%;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+.food-item-details .food-item-description {
+  flex: 1;
+  padding: 10px;
 }
 
-.order-label {
-  margin-bottom: 1%;
+/* Home Page Specific Styles */
+.banner {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 50px 0;
+}
+
+.featured-foods {
+  padding: 20px;
+  text-align: center;
+}
+
+.featured-foods .food-item {
+  margin-bottom: 20px;
+}
+
+.featured-foods .food-item img {
+  width: 100%;
+  max-width: 300px;
+}
+
+.about-us {
+  background-color: #f4f4f4;
+  padding: 20px;
+  text-align: center;
+}
+
+.foods-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.food-menu-desc h4 {
+  color: black;
+}
+
+.food-item {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-width: 300px;
+}
+
+.food-description {
+  font-size: 14px;
+  color: #666;
+}
+
+.food-price {
   font-weight: bold;
+  color: #333;
 }
 
-/* CSS for Mobile Size or Smaller Screen */
+.order-button {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.order-button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive Styles */
 @media only screen and (max-width: 768px) {
   .logo {
     width: 80%;
-    float: none;
     margin: 1% auto;
   }
 
-  .menu ul {
-    text-align: center;
+  .menu {
+    text-align: left;
+    float: none;
+    width: 100%;
+    padding-top: 10px;
+  }
+
+  .menu ul li {
+    padding: 5px 10px;
   }
 
   .food-search input[type="search"] {
@@ -280,15 +313,16 @@ fieldset {
 
   .food-menu-box {
     width: 90%;
-    padding: 5%;
-    margin-bottom: 5%;
+    margin: 5% auto;
   }
 
-  .social {
-    padding: 5% 0;
+  .food-item-details .container {
+    flex-direction: column;
+    align-items: center;
   }
 
-  .order {
-    width: 100%;
+  .food-item-details .food-item-image,
+  .food-item-details .food-item-description {
+    max-width: 100%;
   }
 }
