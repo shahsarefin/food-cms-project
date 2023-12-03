@@ -11,6 +11,11 @@
         <div class="container">
             <div class="menu text-right">
             <ul>
+            <div class="logo-container">
+            <a href="index.php">
+                <img src="../user/img/logo.png" alt="Food Manitoba Logo" />
+            </a>
+        </div>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="categories.php">Browse Categories</a></li>
                 <li><a href="foods.php">All Foods</a></li>
