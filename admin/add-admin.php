@@ -7,9 +7,36 @@ $message = "";
 if(isset($_POST['submit'])) {
     //7.2 - Userbname and password are stored in admin table
     //7.3 passwords stored in admin table hasded and salted
-    $full_name = $_POST['full_name'];
-    $username = $_POST['username'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    // 4.1 Validate Full Name
+    $full_name = filter_input(INPUT_POST, 'full_name', FILTER_SANITIZE_STRING);
+    if(empty($full_name)) {
+        // Handle error - full name is required
+        $message = "Full name is required"; // Validation message for 4.1
+        $_SESSION['admin_add_error'] = $message;
+        header('Location: manage-admin.php');
+        exit();
+    }
+
+    // 4.1 Validate Username
+    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    if(empty($username)) {
+        // Handle error - username is required
+        $message = "Username is required"; // Validation message for 4.1
+        $_SESSION['admin_add_error'] = $message;
+        header('Location: manage-admin.php');
+        exit();
+    }
+    // 4.1 Validate Password (No sanitization required for passwords as they will be hashed)
+    if(empty($_POST['password'])) {
+        // Handle error - password is required
+        $message = "Password is required"; // Validation message for 4.1
+        $_SESSION['admin_add_error'] = $message;
+        header('Location: manage-admin.php');
+        exit();
+    } else {
+        // 4.3 Sanitize and hash the password
+        $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Password hashing for 4.3
+    }
 
     $stmt = $pdo->prepare("INSERT INTO tbl_admin (full_name, username, password) VALUES (:full_name, :username, :password)");
     $stmt->bindParam(':full_name', $full_name);
