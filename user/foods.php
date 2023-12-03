@@ -7,15 +7,15 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <section class="navbar">
+<section class="navbar">
         <div class="container">
             <div class="menu text-right">
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="categories.php">Categories</a></li>
-                    <li><a href="foods.php">Foods</a></li>
-                    
-                </ul>
+            <ul>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="categories.php">Browse Categories</a></li>
+                <li><a href="foods.php">All Foods</a></li>
+                <li><a href="../admin/login.php">Admin Site</a></li>
+            </ul>
             </div>
             <div class="clearfix"></div>
         </div>
@@ -30,43 +30,41 @@
         </div>
     </section>
 
+        <!-- Food Menu Section -->
     <section class="food-menu">
         <div class="container">
             <h2 class="text-center">Food Menu</h2>
 
             <?php include 'db_connect.php'; ?>
 
-            <?php try {
+            <?php
+            try {
                 $sql = "SELECT * FROM tbl_food WHERE active='Yes'";
                 $stmt = $pdo->query($sql);
 
                 if ($stmt->rowCount() > 0) :
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
+                        $id = $row['id'];
                         $title = $row['title'];
-                        $price = $row['price'];
-                        $description = $row['description'];
                         $image_name = $row['image_name'];
-            ?>
+                        ?>
 
-                        <div class="food-menu-box">
-                            <div class="food-menu-img">
-                                <?php if ($image_name != "") : ?>
-                                    <img src="../images/food/<?php echo htmlspecialchars($image_name); ?>" alt="<?php echo htmlspecialchars($title); ?>" class="img-responsive img-curve">
-                                <?php else : ?>
-                                    <div class="error">Image not available.</div>
-                                <?php endif; ?>
-                            </div>
+                        <!--2.7 - Clicking on any of the foods will take the user to that particular food item -->
+                        <a href="item-details.php?food_id=<?php echo $id; ?>" class="food-menu-box-link">
+                            <div class="food-menu-box">
+                                <div class="food-menu-img">
+                                    <?php if ($image_name != "") : ?>
+                                        <img src="../images/food/<?php echo htmlspecialchars($image_name); ?>" alt="<?php echo htmlspecialchars($title); ?>" class="img-responsive img-curve">
+                                    <?php else : ?>
+                                        <div class="error">Image not available.</div>
+                                    <?php endif; ?>
+                                </div>
 
-                            <div class="food-menu-desc">
-                                <h4><?php echo $title; ?></h4>
-                                <p class="food-price">$<?php echo $price; ?></p>
-                                <p class="food-detail">
-                                    <?php echo $description; ?>
-                                </p>
-                                <br />
-                                <a href="order.html?food_id=<?php echo $row['id']; ?>" class="btn btn-primary">Order Now</a>
+                                <div class="food-menu-desc">
+                                    <h4><?php echo htmlspecialchars($title); ?></h4>
+                                </div>
                             </div>
-                        </div>
+                        </a>
 
             <?php
                     endwhile;

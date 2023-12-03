@@ -5,7 +5,6 @@ include "./DB/db_connect.php";
 $title = $featured = $active = $current_image = "";
 $id = 0;
 
-// Check if ID is set and fetch current category data
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $sql = "SELECT * FROM tbl_category WHERE id = :id";
@@ -13,7 +12,7 @@ if (isset($_GET['id'])) {
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
     $category = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
     if ($category) {
         $title = $category['title'];
         $featured = $category['featured'];
@@ -31,41 +30,44 @@ if (isset($_POST['submit'])) {
     $title = $_POST['title'];
     $featured = $_POST['featured'];
     $active = $_POST['active'];
-    // Default to the current image if no new image is uploaded
-    $image_name = $current_image; 
+    $image_name = $current_image;
 
-    // Image handling
-    if (isset($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-        $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
-        if (in_array($file_extension, $valid_extensions)) {
-            $image_name = "Category-File-" . rand(0000, 9999) . "." . $file_extension;
-            $source_path = $_FILES['image']['tmp_name'];
-            $destination_path = "../images/category/" . $image_name;
+    if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+            $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
 
-            if (!move_uploaded_file($source_path, $destination_path)) {
-                $_SESSION['upload'] = "<div class='error'>Failed to upload the image.</div>";
+            if (in_array($file_extension, $valid_extensions)) {
+                $image_name = "Category-File-" . rand(0000, 9999) . "." . $file_extension;
+                $source_path = $_FILES['image']['tmp_name'];
+                $destination_path = "../images/category/" . $image_name;
+
+                if (!move_uploaded_file($source_path, $destination_path)) {
+                    $_SESSION['upload'] = "<div class='error'>Failed to upload the image.</div>";
+                    header("location: update-category.php?id=" . $id);
+                    exit();
+                }
+
+                if ($current_image != "" && $current_image != $image_name) {
+                    $remove_path = "../images/category/" . $current_image;
+                    if (file_exists($remove_path) && !unlink($remove_path)) {
+                        $_SESSION['failed-remove'] = "<div class='error'>Failed to remove current image.</div>";
+                        header("Location: update-category.php?id=" . $id);
+                        exit();
+                    }
+                }
+            } else {
+                $_SESSION['upload'] = "<div class='error'>Invalid file extension. Only image files (JPEG, PNG, GIF) are allowed.</div>";
                 header("location: update-category.php?id=" . $id);
                 exit();
             }
-
-            // Delete the old image if a new one is uploaded
-            if ($current_image != "" && $current_image != $image_name) {
-                $remove_path = "../images/category/" . $current_image;
-                if (file_exists($remove_path) && !unlink($remove_path)) {
-                    $_SESSION['failed-remove'] = "<div class='error'>Failed to remove current image.</div>";
-                    header("Location: update-category.php?id=" . $id);
-                    exit();
-                }
-            }
         } else {
-            $_SESSION['upload'] = "<div class='error'>Invalid file extension. Only image files (JPEG, PNG, GIF) are allowed.</div>";
+            $_SESSION['upload'] = "<div class='error'>An error occurred during file upload.</div>";
             header("location: update-category.php?id=" . $id);
             exit();
         }
     }
 
-    // SQL query to update the category
     $sql = "UPDATE tbl_category SET title = :title, featured = :featured, active = :active, image_name = :image_name WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':title', $title);
@@ -86,8 +88,6 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -99,6 +99,25 @@ if (isset($_POST['submit'])) {
     <div class="wrapper">
         <h1>Update Category</h1>
         <br><br>
+
+        <?php
+        if (isset($_SESSION['upload'])) {
+            echo $_SESSION['upload'];
+            unset($_SESSION['upload']);
+        }
+        if (isset($_SESSION['failed-remove'])) {
+            echo $_SESSION['failed-remove'];
+            unset($_SESSION['failed-remove']);
+        }
+        if (isset($_SESSION['update'])) {
+            echo $_SESSION['update'];
+            unset($_SESSION['update']);
+        }
+        if (isset($_SESSION['update-error'])) {
+            echo $_SESSION['update-error'];
+            unset($_SESSION['update-error']);
+        }
+        ?>
 
         <form action="" method="post" enctype="multipart/form-data">
             <table class="tbl-30">

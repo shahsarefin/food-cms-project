@@ -2,130 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Food Manitoba - Home</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-<section class="navbar">
-    <div class="container">
-        <div class="menu text-right">
+    <!-- Navbar Section -->
+    <section class="navbar">
+        <div class="container">
+            <div class="menu text-right">
             <ul>
                 <li><a href="index.php">Home</a></li>
-                <li><a href="categories.php">Categories</a></li>
-                <li><a href="foods.php">Foods</a></li>
-                
+                <li><a href="categories.php">Browse Categories</a></li>
+                <li><a href="foods.php">All Foods</a></li>
+                <li><a href="../admin/login.php">Admin Site</a></li>
             </ul>
-        </div>
-        <div class="clearfix"></div>
-    </div>
-</section>
-
-    <!-- Food Search Section -->
-    <section class="food-search text-center">
-        <div class="container">
-            <form action="food-search.php" method="POST">
-                <input type="search" name="search" placeholder="Search for Food.." required />
-                <input type="submit" name="submit" value="Search" class="btn btn-primary" />
-            </form>
-        </div>
-    </section>
-
-    <!-- Categories Section -->
-    <section class="categories">
-        <div class="container">
-            <h2 class="text-center">Categories</h2>
-
-            <?php include 'db_connect.php'; ?>
-
-            <?php try {
-                $sql = "SELECT * FROM tbl_category WHERE active='Yes' LIMIT 3  ";
-                $stmt = $pdo->query($sql);
-
-                if ($stmt->rowCount() > 0) :
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
-                        $id = $row['id'];
-                        $title = $row['title'];
-                        $image_name = $row['image_name'];
-            ?>
-                        <a href="category-foods.php?category_id=<?php echo $id; ?>">
-                            <div class="box-3 float-container">
-                                <?php if ($image_name == "") : ?>
-                                    <div class='error'>Image not available.</div>
-                                <?php else : ?>
-                                    <img src="../images/category/<?php echo htmlspecialchars($image_name); ?>" alt="<?php echo htmlspecialchars($title); ?>" class="img-responsive img-curve" />
-                                <?php endif; ?>
-                                <h3 class="float-text text-white"><?php echo htmlspecialchars($title); ?></h3>
-                            </div>
-                        </a>
-            <?php
-                    endwhile;
-                else :
-                    echo "<div class='error'>Category not available.</div>";
-                endif;
-            } catch (PDOException $e) {
-                echo "Error: " . $e->getMessage();
-            }
-            ?>
-
+            </div>
             <div class="clearfix"></div>
         </div>
     </section>
+    
+    <section class="banner">
+        <h1>Welcome to Food Manitoba</h1>
+        <p>Welcome to Food Manitoba! Delve into our world of diverse culinary delights and embark on a gastronomic journey like no other. Our platform brings the finest cuisines right to your doorstep, enabling you to order your favorite meals online with unparalleled ease. Whether you're craving traditional local dishes or exotic international flavors, Food Manitoba is your gateway to a world of taste sensations. Our commitment to quality, variety, and convenience ensures that every meal ordered is not just food, but an experience to savor. Join us in celebrating the joy of eating, as we connect you to the best culinary offerings in Manitoba.</p>
+    </section>
 
-<!-- Food Menu Section -->
-<section class="food-menu">
-    <div class="container">
-        <h2 class="text-center">Food Menu</h2>
-
-        <?php try {
-            $sql = "SELECT * FROM tbl_food WHERE active='Yes' AND featured='Yes' LIMIT 6";
-            $stmt = $pdo->query($sql);
-
-            if ($stmt->rowCount() > 0) :
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
-                    $id = $row['id'];
-                    $title = $row['title'];
-                    $price = $row['price'];
-                    $description = $row['description'];
-                    $image_name = $row['image_name'];
-        ?>
-
-        <div class="food-menu-box">
-            <div class="food-menu-img">
-                <?php if ($image_name != "") : ?>
-                    <img src="../images/food/<?php echo htmlspecialchars($image_name); ?>" alt="<?php echo htmlspecialchars($title); ?>" class="img-responsive img-curve">
-                <?php else : ?>
-                    <div class="error">Image not available.</div>
-                <?php endif; ?>
-            </div>
-
-            <div class="food-menu-desc">
-                <h4><?php echo htmlspecialchars($title); ?></h4>
-                <p class="food-price">$<?php echo htmlspecialchars($price); ?></p>
-                <p class="food-detail"><?php echo htmlspecialchars($description); ?></p>
-                <br />
-                <a href="#" class="btn btn-primary">Order Now</a>
-            </div>
+    <section class="featured-foods">
+    <h2>Featured Foods</h2>
+    <div class="foods-container">
+        <div class="food-item">
+            <img src="./img/Pizza.png" alt="Food Name">
+            <h3>Pizza</h3>
+            <p class="food-description">Delicious description of Food 1.</p>
+            <p class="food-price">$10.99</p>
+            <a href="order_food_1.php" class="order-button">Order Now</a>
         </div>
-
-        <?php
-                endwhile;
-            else :
-                echo "<div class='error'>Food not available.</div>";
-            endif;
-        } catch (PDOException $e) {
-            echo 'Query failed: ' . $e->getMessage();
-        }
-        ?>
-
-        <div class="clearfix"></div>
-        <div class="text-center">
-            <a href="foods.php" class="btn btn-primary">See All Foods</a>
+        <div class="food-item">
+            <img src="./img/salad.png" alt="Food Name">
+            <h3>Salad</h3>
+            <p class="food-description">Tasty details of Food 2.</p>
+            <p class="food-price">$12.99</p>
+            <a href="order_food_2.php" class="order-button">Order Now</a>
+        </div>
+        <div class="food-item">
+            <img src="./img/drinks.png" alt="Food Name">
+            <h3>Drinks</h3>
+            <p class="food-description">Tasty details of Food 2.</p>
+            <p class="food-price">$2.99</p>
+            <a href="order_food_2.php" class="order-button">Order Now</a>
         </div>
     </div>
 </section>
 
 
+    <section class="about-us">
+        <h2>About Food Manitoba</h2>
+        <p>We are more than just a food ordering service; we are a celebration of Manitoba’s rich and diverse culinary culture. Our commitment lies in delivering the ultimate dining experience, right to your doorstep. With our user-friendly online ordering system, you'll find it incredibly easy to enjoy your favorite dishes with just a few clicks. We meticulously curate our restaurant partners to ensure that you have access to the highest quality of meals, whether it's a quick bite or a lavish dinner. Our platform is a testament to our dedication to food excellence and customer satisfaction. We believe that good food is more than just sustenance – it's a reason to come together and share moments of joy. At Food Manitoba, we're not just serving meals; we're serving memories.</p>
+    </section>
 
     <!-- Footer Section -->
     <section class="footer">
