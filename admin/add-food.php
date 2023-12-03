@@ -4,13 +4,52 @@ session_start();
 include "./DB/db_connect.php";
 
 if (isset($_POST['submit'])) {
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $price = $_POST['price'];
-    $category = $_POST['category'];
+    // 4.1 Validate Title
+    $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING);
+    if(empty($title)) {
+        // Handle error - title is required
+        $message = "Title is required"; // Validation message for 4.1
+        $_SESSION['add_food_error'] = $message;
+        header("location: add-food.php");
+        exit;
+    }
 
-    $featured = isset($_POST['featured']) ? $_POST['featured'] : "No";
-    $active = isset($_POST['active']) ? $_POST['active'] : "No";
+    // 4.1 Validate Description
+    $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+    if(empty($description)) {
+        // Handle error - description is required
+        $message = "Description is required"; // Validation message for 4.1
+        $_SESSION['add_food_error'] = $message;
+        header("location: add-food.php");
+        exit;
+    }
+
+    // 4.2 Validate and Sanitize Price
+    $price = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT);
+    if($price === false) {
+        // Handle error - price must be a valid number
+        $message = "Price must be a valid number"; // Validation message for 4.2
+        $_SESSION['add_food_error'] = $message;
+        header("location: add-food.php");
+        exit;
+    }
+    // 4.2 Validate and Sanitize Category 
+    $category = filter_input(INPUT_POST, 'category', FILTER_VALIDATE_INT);
+    if($category === false) {
+        // Handle error - category must be a valid ID
+        $message = "Category must be selected"; // Validation message for 4.2
+        $_SESSION['add_food_error'] = $message;
+        header("location: add-food.php");
+        exit;
+    }
+
+    // 4.2 Validate Featured and Active as they are expected to be 'Yes' or 'No'
+    $featured = filter_input(INPUT_POST, 'featured', FILTER_SANITIZE_STRING);
+    $featured = $featured === 'Yes' ? 'Yes' : 'No'; 
+
+    $active = filter_input(INPUT_POST, 'active', FILTER_SANITIZE_STRING);
+    $active = $active === 'Yes' ? 'Yes' : 'No'; 
+    
     $image_name = ""; //6.1 Images are optional. Pages can still be created and updated without adding an image.
 
     if (isset($_FILES['image']['name']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
