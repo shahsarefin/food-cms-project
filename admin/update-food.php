@@ -43,29 +43,35 @@ if (isset($_POST['submit'])) {
     $active = $_POST['active'];
 
     // Image handling
-    if (isset($_FILES['image']['name']) && $_FILES['image']['name'] != "") {
-        // New image is uploaded
-        $image_name = $_FILES['image']['name'];
-        $source_path = $_FILES['image']['tmp_name'];
-        $file_extension = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
-        $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
-        
-        if (in_array($file_extension, $valid_extensions)) {
-            $image_name = "Food-Name-" . rand(0000, 9999) . "." . $file_extension;
-            $destination_path = "../images/food/" . $image_name;
+    if (isset($_FILES['image']['name']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+        if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            // New image is uploaded
+            $image_name = $_FILES['image']['name'];
+            $source_path = $_FILES['image']['tmp_name'];
+            $file_extension = strtolower(pathinfo($image_name, PATHINFO_EXTENSION));
+            $valid_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+            
+            if (in_array($file_extension, $valid_extensions)) {
+                $image_name = "Food-Name-" . rand(0000, 9999) . "." . $file_extension;
+                $destination_path = "../images/food/" . $image_name;
 
-            if (!move_uploaded_file($source_path, $destination_path)) {
-                $_SESSION['upload-error'] = "Failed to upload new image.";
+                if (!move_uploaded_file($source_path, $destination_path)) {
+                    $_SESSION['upload-error'] = "Failed to upload new image.";
+                    header('Location: update-food.php?id=' . $id);
+                    exit();
+                }
+
+                // Delete the old image if it exists
+                if ($food['image_name'] != "" && file_exists("../images/food/" . $food['image_name'])) {
+                    unlink("../images/food/" . $food['image_name']); 
+                }
+            } else {
+                $_SESSION['upload-error'] = "Invalid file extension. Only JPEG, PNG, and GIF images are allowed.";
                 header('Location: update-food.php?id=' . $id);
                 exit();
             }
-
-            // Delete the old image if it exists
-            if ($food['image_name'] != "" && file_exists("../images/food/" . $food['image_name'])) {
-                unlink("../images/food/" . $food['image_name']); // Remove the associated image from the page
-            }
         } else {
-            $_SESSION['upload-error'] = "Invalid file extension. Only JPEG, PNG, and GIF images are allowed.";
+            $_SESSION['upload-error'] = "An error occurred during file upload.";
             header('Location: update-food.php?id=' . $id);
             exit();
         }
@@ -98,9 +104,8 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
-
-
-
+<!-- HTML: Update Food Page -->
+<!DOCTYPE html>
 <html>
 <head>
     <title>Update Food Page</title>
@@ -124,6 +129,22 @@ if (isset($_POST['submit'])) {
     <div class="main-content">
         <div class="wrapper">
             <h1>Update Food</h1>
+        
+            <?php
+        // Display upload error messages if any
+        if (isset($_SESSION['upload-error'])) {
+            echo "<div class='error'>" . $_SESSION['upload-error'] . "</div>";
+            unset($_SESSION['upload-error']);
+        }
+        if (isset($_SESSION['update'])) {
+            echo "<div class='success'>" . $_SESSION['update'] . "</div>";
+            unset($_SESSION['update']);
+        }
+        if (isset($_SESSION['update-error'])) {
+            echo "<div class='error'>" . $_SESSION['update-error'] . "</div>";
+            unset($_SESSION['update-error']);
+        }
+        ?>
 
             <form action="update-food.php?id=<?= htmlspecialchars($id) ?>" method="post" enctype="multipart/form-data">
                 <table>
@@ -211,6 +232,7 @@ if (isset($_POST['submit'])) {
             </form>
         </div>
     </div>
+
 
     <!-- Footer Section -->
     <div class="footer">
