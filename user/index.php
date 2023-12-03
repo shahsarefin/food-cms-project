@@ -11,10 +11,16 @@
         <div class="container">
             <div class="menu text-right">
             <ul>
+            <div class="logo-container">
+            <a href="index.php">
+                <img src="../user/img/logo.png" alt="Food Manitoba Logo" />
+            </a>
+        </div>
                 <li><a href="index.php">Home</a></li>
                 <li><a href="categories.php">Browse Categories</a></li>
                 <li><a href="foods.php">All Foods</a></li>
                 <li><a href="../admin/login.php">Admin Site</a></li>
+                
             </ul>
             </div>
             <div class="clearfix"></div>
@@ -32,21 +38,27 @@
         <div class="food-item">
             <img src="./img/Pizza.png" alt="Food Name">
             <h3>Pizza</h3>
-            <p class="food-description">Delicious description of Food 1.</p>
+            <p class="food-description">
+Indulge in the ultimate pizza experience with our signature Supreme Delight Pizza. Every slice is a symphony of flavors, featuring a golden, hand-tossed crust that's crispy on the outside and fluffy on the inside. We lavish it with our secret tomato sauce, a generous blend of mozzarella and cheddar, and top it off with a hearty assortment of freshly-sliced pepperoni, bell peppers, red onions, succulent mushrooms, and black olives. Perfectly baked to melt-in-your-mouth perfection, this pizza is a crowd-pleaser that will keep you coming back for more!
+            </p>
             <p class="food-price">$10.99</p>
             <a href="order_food_1.php" class="order-button">Order Now</a>
         </div>
         <div class="food-item">
             <img src="./img/salad.png" alt="Food Name">
             <h3>Salad</h3>
-            <p class="food-description">Tasty details of Food 2.</p>
+            <p class="food-description">
+            Embark on a journey of freshness with our Garden Greens Salad. This vibrant bowl is brimming with a colorful mix of crisp lettuce, ripe cherry tomatoes, crunchy cucumbers, and sweet corn. A sprinkle of feta cheese and a handful of toasted seeds add a satisfying crunch, while our house-made citrus vinaigrette dressing lends a zesty finish. It's a perfect starter to awaken your palate or a light, refreshing meal for those health-conscious moments. Dive into this salad and savor the taste of healthful indulgence.
+            </p>
             <p class="food-price">$12.99</p>
             <a href="order_food_2.php" class="order-button">Order Now</a>
         </div>
         <div class="food-item">
             <img src="./img/drinks.png" alt="Food Name">
             <h3>Drinks</h3>
-            <p class="food-description">Tasty details of Food 2.</p>
+            <p class="food-description">
+            Quench your thirst with our curated collection of refreshing beverages. Our Tropical Bliss Smoothie, a fan favorite, is a creamy and dreamy concoction of ripe bananas, juicy mangoes, and a touch of coconut milk, creating a tropical haven in every sip. For a classic refreshment, our Chilled Lemonade is made with just the right balance of tangy lemons and sweetness, served over ice for the ultimate cool down. And for the coffee lovers, our Iced Caramel Macchiato layers bold espresso with velvety milk and a swirl of caramel, making it an irresistibly sophisticated treat at any time of the day. Whatever your mood, we have the perfect drink to quench your thirst.
+            </p>
             <p class="food-price">$2.99</p>
             <a href="order_food_2.php" class="order-button">Order Now</a>
         </div>
