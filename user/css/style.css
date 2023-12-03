@@ -1,4 +1,4 @@
-/* CSS for All */
+/* CSS for user part */
 * {
   margin: 0;
   padding: 0;
@@ -81,14 +81,9 @@ h3 {
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-.logo {
-  width: 10%;
-  float: left;
-}
-
 .menu {
   float: left;
-  width: 90%;
+  width: 80%;
   line-height: 60px;
 }
 
@@ -113,6 +108,20 @@ h3 {
 
 .menu ul li a:hover {
   color: gray;
+}
+
+.logo-container {
+  float: right;
+  width: 10%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-container img {
+  max-height: 100%;
+  max-width: 100%;
 }
 
 /* Food Search Section */
@@ -194,7 +203,7 @@ h3 {
 
 /* Home Page Specific Styles */
 .banner {
-  background-color: #007bff;
+  background-color: black;
   color: white;
   text-align: center;
   padding: 50px 0;
@@ -215,9 +224,14 @@ h3 {
 }
 
 .about-us {
-  background-color: #f4f4f4;
+  background-color: black;
+  color: white;
   padding: 20px;
   text-align: center;
+}
+
+.about-us h2 {
+  color: white;
 }
 
 .foods-container {
@@ -249,7 +263,7 @@ h3 {
 
 .order-button {
   display: inline-block;
-  background-color: #007bff;
+  background-color: skyblue;
   color: white;
   padding: 10px 15px;
   text-decoration: none;
