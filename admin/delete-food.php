@@ -3,8 +3,9 @@ session_start();
 include "./DB/db_connect.php";
 
 //Deleting id and images from database and local folder
+// Validation 
 if(isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $id = $_GET['id'];
+    $id = intval($_GET['id']);
 
     // Fetch the image name
     $sql = "SELECT image_name FROM tbl_food WHERE id = :id";
