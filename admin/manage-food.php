@@ -1,9 +1,5 @@
 <?php
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+//2.3 sorting added for manage food page
 session_start();
 include "./DB/db_connect.php";
 
@@ -12,7 +8,7 @@ $admin_added = isset($_SESSION['admin_added']) ? $_SESSION['admin_added'] : "";
 $admin_deleted = isset($_SESSION['admin_deleted']) ? $_SESSION['admin_deleted'] : "";
 $admin_update_status = isset($_SESSION['admin_update_status']) ? $_SESSION['admin_update_status'] : "";
 
-// Determine sort option
+// sorting
 $sort = isset($_GET['sort']) ? $_GET['sort'] : null;
 $allowedSorts = ['title', 'created_at', 'updated_at'];
 $orderBy = "";
@@ -84,7 +80,7 @@ unset($_SESSION['admin_added'], $_SESSION['admin_deleted'], $_SESSION['admin_upd
             <br><br>
 
             <br>
-          <!-- Sorting Options -->
+          <!-- 2.3 Sorting  -->
 <div class="sorting-options">
 <span class="bold-text">Sort by:</span> 
     <a href="?sort=title" class="sorting-button">Title</a> |
