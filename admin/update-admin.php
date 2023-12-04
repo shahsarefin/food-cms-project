@@ -8,9 +8,17 @@ $message = "";
 
 if (isset($_POST['submit'])) {
     
-    $id = $_POST['id'];
-    $full_name = $_POST['full_name'];
-    $username = $_POST['username'];
+        // 4.2: Sanitize and validate the ID
+        $id = isset($_POST['id']) && is_numeric($_POST['id']) ? intval($_POST['id']) : 0;
+
+        // 4.1: Validate input fields
+        $full_name = $_POST['full_name'];
+        $username = $_POST['username'];
+    
+        // 4.3: Sanitize inputs to prevent HTML injection
+        $full_name = htmlspecialchars($full_name, ENT_QUOTES, 'UTF-8');
+        $username = htmlspecialchars($username, ENT_QUOTES, 'UTF-8');
+    
 
     
     $stmt = $pdo->prepare("UPDATE tbl_admin SET full_name = :full_name, username = :username WHERE id = :id");

@@ -6,7 +6,9 @@ $title = $featured = $active = $current_image = "";
 $id = 0;
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    // 4.2: Sanitize and validate the ID
+    $id = isset($_GET['id']) && is_numeric($_GET['id']) ? intval($_GET['id']) : 0;
+
     $sql = "SELECT * FROM tbl_category WHERE id = :id";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -26,11 +28,17 @@ if (isset($_GET['id'])) {
 }
 
 if (isset($_POST['submit'])) {
+    // 4.1: Validate input fields
     $id = $_POST['id'];
     $title = $_POST['title'];
     $featured = $_POST['featured'];
     $active = $_POST['active'];
     $image_name = $current_image;
+
+        // 4.3: Sanitize inputs to prevent HTML injection
+        $title = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+        $featured = htmlspecialchars($featured, ENT_QUOTES, 'UTF-8');
+        $active = htmlspecialchars($active, ENT_QUOTES, 'UTF-8');
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
         if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {

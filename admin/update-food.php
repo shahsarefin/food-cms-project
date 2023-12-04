@@ -2,26 +2,36 @@
 session_start();
 include "./DB/db_connect.php";
 
+// Initialization
 $id = $title = $description = $price = $category = $featured = $active = $image_name = "";
 $current_image = "";
 $categories = [];
 
 // Fetch the food item details
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $id = intval($_GET['id']);
+
+    $sql = "SELECT * FROM tbl_food WHERE id = :id";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $food = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($food) {
+        $title = $food['title'];
+        $description = $food['description'];
+        $price = $food['price'];
+        $category = $food['category_id'];
+        $featured = $food['featured'];
+        $active = $food['active'];
+        $current_image = $food['image_name'];
+    } else {
+        $_SESSION['error'] = "Food not found!";
+        header('Location: manage-food.php');
+        exit;
+    }
+} else {
     $_SESSION['error'] = "Invalid food ID.";
-    header('Location: manage-food.php');
-    exit;
-}
-
-$id = $_GET['id'];
-$sql = "SELECT * FROM tbl_food WHERE id = :id";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
-$stmt->execute();
-$food = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$food) {
-    $_SESSION['error'] = "Food not found!";
     header('Location: manage-food.php');
     exit;
 }
@@ -34,13 +44,14 @@ $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle form submission
 if (isset($_POST['submit'])) {
-    // Process form data
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $price = $_POST['price'];
-    $category = $_POST['category'];
-    $featured = $_POST['featured'];
-    $active = $_POST['active'];
+    $id = intval($_POST['id']);
+    $title = htmlspecialchars($_POST['title'], ENT_QUOTES, 'UTF-8');
+    $description = htmlspecialchars($_POST['description'], ENT_QUOTES, 'UTF-8');
+    $price = htmlspecialchars($_POST['price'], ENT_QUOTES, 'UTF-8');
+    $category = htmlspecialchars($_POST['category'], ENT_QUOTES, 'UTF-8');
+    $featured = htmlspecialchars($_POST['featured'], ENT_QUOTES, 'UTF-8');
+    $active = htmlspecialchars($_POST['active'], ENT_QUOTES, 'UTF-8');
+    $image_name = $current_image;  // Keep the current image by default
 
     // Image handling
     if (isset($_FILES['image']['name']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
