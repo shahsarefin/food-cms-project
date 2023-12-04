@@ -1,21 +1,23 @@
 <?php 
-//7.4 - Login handled, messages displayed,session used, logout handled in logout.php
 session_start();
 include './DB/db_connect.php';
 
 if (isset($_POST["submit"])) :
     
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    // 4.3: Sanitize user inputs to prevent HTML injection
+    //ENT_QUOTES: Converts quotes to HTML entities,UTF-8 Ensures character encoding compatibility, especially for non-standard characters, maintaining correct display and interpretation.
+    $username = isset($_POST['username']) ? htmlspecialchars($_POST['username'], ENT_QUOTES, 'UTF-8') : '';
+    $password = isset($_POST['password']) ? htmlspecialchars($_POST['password'], ENT_QUOTES, 'UTF-8') : '';
 
-    $stmt = $pdo->prepare("SELECT id, username, password FROM tbl_admin WHERE username = :username");
-    $stmt->bindParam(':username', $username);
-    $stmt->execute();
+    // 4.1: Validate username and password
+    if (!empty($username) && !empty($password)) {
+        $stmt = $pdo->prepare("SELECT id, username, password FROM tbl_admin WHERE username = :username");
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
 
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) :
-        if (password_verify($password, $user['password'])) :
+        if ($user && password_verify($password, $user['password'])) :
             $_SESSION['loggedin'] = "Login Successful.";
             header("location: index.php");
             exit;
@@ -24,11 +26,11 @@ if (isset($_POST["submit"])) :
             header("location: login.php");
             exit;
         endif;
-    else :
-        $_SESSION['login_err'] = "Invalid username or password.";
+    } else {
+        $_SESSION['login_err'] = "Please enter username and password.";
         header("location: login.php");
         exit;
-    endif;
+    }
 endif;
 ?>
 
