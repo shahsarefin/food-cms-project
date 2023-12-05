@@ -49,16 +49,20 @@
 
                 if ($stmt->rowCount() > 0) :
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) :
+                        // 4.2: Ensuring that the ID is numeric
                         $id = $row['id'];
-                        $title = $row['title'];
-                        $image_name = $row['image_name'];
+                        // 4.3: Sanitization of output to prevent XSS
+                        $title = htmlspecialchars($row['title']);
+                        $image_name = htmlspecialchars($row['image_name']);
                         ?>
 
                         <!--2.7 - Clicking on any of the foods will take the user to that particular food item -->
                         <a href="item-details.php?food_id=<?php echo $id; ?>" class="food-menu-box-link">
                             <div class="food-menu-box">
                                 <div class="food-menu-img">
+                                    
                                     <?php if ($image_name != "") : ?>
+                                        <!-- 4.3: Sanitization of image to prevent XSS -->
                                         <img src="../images/food/<?php echo htmlspecialchars($image_name); ?>" alt="<?php echo htmlspecialchars($title); ?>" class="img-responsive img-curve">
                                     <?php else : ?>
                                         <div class="error">Image not available.</div>
