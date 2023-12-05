@@ -43,6 +43,7 @@ if (isset($_SESSION['upload-error'])) {
                 <li><a href="manage-category.php">Category</a></li>
                 <li><a href="manage-food.php">Food</a></li>
                 <li><a href="logout.php">Logout</a></li>
+                <li><a href="../user/index.php" class="user-site-button">User Site</a></li>
             </ul>
         </div>
     </div>
