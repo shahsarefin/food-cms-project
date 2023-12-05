@@ -6,7 +6,7 @@
     <title>Browse Categories</title>
     <link rel="stylesheet" href="css/style.css">
     <script>
-        // JavaScript function to load foods based on category
+        //Server-side validation done in loadFoods.php to sanitize 'category_id'
         function loadFoods(categoryId) {
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
