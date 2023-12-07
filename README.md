@@ -1,8 +1,8 @@
-# Food Ordering CMS - SHAH
+# Food CMS - SHAH
 
 ## Introduction
 
-Food Ordering CMS by Shah Sultanul Arefin is a custom-built Content Management System for Food Manitoba designed to streamline online food menu management. Developed for my backend web development course, this CMS offers a user-friendly web interface for both customers and staff, enhancing the overall food ordering experience.
+Food CMS by Shah Sultanul Arefin is a custom-built Content Management System for Food Manitoba designed to streamline online food menu management. Developed for my backend web development course, this CMS offers a user-friendly web interface for both customers and staff, enhancing the overall food ordering experience.
 
 ## Features
 
